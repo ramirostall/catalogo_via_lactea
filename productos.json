@@ -1,0 +1,111 @@
+{
+  "categorias": [
+    {
+      "id": "quesos",
+      "nombre": "Quesos",
+      "icono": "🧀",
+      "subcategorias": [
+        {
+          "id": "cremoso",
+          "nombre": "Cremoso y Port Salut",
+          "productos": [
+            { "id": 1, "nombre": "Cremón Fraccionado La Serenísima", "marca": "La Serenísima", "precio": 13255.31, "unidad": "kg", "tags": ["SIN TACC"], "promo": null, "imagen": "" },
+            { "id": 2, "nombre": "Cremoso Barraza", "marca": "Barraza", "precio": 7900.02, "unidad": "kg", "tags": ["SIN TACC"], "promo": { "cantidad": 4, "precio": 7505.02 }, "imagen": "" },
+            { "id": 3, "nombre": "Cremoso De La Colonia", "marca": "De la Colonia", "precio": 7263.26, "unidad": "kg", "tags": [], "promo": { "cantidad": 4, "precio": 6900.09 }, "imagen": "" },
+            { "id": 4, "nombre": "Cremoso La Serenísima (3kg)", "marca": "La Serenísima", "precio": 11667.04, "unidad": "kg", "tags": ["SIN TACC"], "promo": null, "imagen": "" },
+            { "id": 5, "nombre": "Cremoso La Tregua", "marca": "La Tregua", "precio": 7495.36, "unidad": "kg", "tags": ["SIN TACC"], "promo": { "cantidad": 4, "precio": 7120.59 }, "imagen": "" },
+            { "id": 6, "nombre": "Cremoso La Unión", "marca": "La Unión", "precio": 8021.74, "unidad": "kg", "tags": ["SIN TACC"], "promo": { "cantidad": 4, "precio": 7633.40 }, "imagen": "" },
+            { "id": 7, "nombre": "Cremoso Noalsa (4kg)", "marca": "Noalsa", "precio": 8543.67, "unidad": "kg", "tags": ["SIN TACC"], "promo": null, "imagen": "" },
+            { "id": 8, "nombre": "Cremoso Port Salut La Chavense", "marca": "La Chavense", "precio": 8074.79, "unidad": "kg", "tags": [], "promo": { "cantidad": 4, "precio": 7671.05 }, "imagen": "" }
+          ]
+        },
+        {
+          "id": "sardo",
+          "nombre": "Sardo y Cuartirolo",
+          "productos": [
+            { "id": 9, "nombre": "Sardo Molfino (4kg)", "marca": "Molfino", "precio": 9850.00, "unidad": "kg", "tags": ["SIN TACC"], "promo": { "cantidad": 4, "precio": 9357.50 }, "imagen": "" },
+            { "id": 10, "nombre": "Cuartirolo La Serenísima", "marca": "La Serenísima", "precio": 8320.00, "unidad": "kg", "tags": ["SIN TACC"], "promo": null, "imagen": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fiambres",
+      "nombre": "Fiambres",
+      "icono": "🥩",
+      "subcategorias": [
+        {
+          "id": "jamon",
+          "nombre": "Jamón Cocido",
+          "productos": [
+            { "id": 11, "nombre": "Jamón Cocido Extra La Serenísima", "marca": "La Serenísima", "precio": 11200.00, "unidad": "kg", "tags": ["SIN TACC"], "promo": null, "imagen": "" },
+            { "id": 12, "nombre": "Jamón Cocido Paladini", "marca": "Paladini", "precio": 9800.00, "unidad": "kg", "tags": [], "promo": { "cantidad": 4, "precio": 9310.00 }, "imagen": "" }
+          ]
+        },
+        {
+          "id": "salame",
+          "nombre": "Salame y Chorizo",
+          "productos": [
+            { "id": 13, "nombre": "Salame Milán Cagnoli", "marca": "Cagnoli", "precio": 14500.00, "unidad": "kg", "tags": [], "promo": null, "imagen": "" },
+            { "id": 14, "nombre": "Chorizo Seco Paladini", "marca": "Paladini", "precio": 12300.00, "unidad": "kg", "tags": [], "promo": { "cantidad": 4, "precio": 11685.00 }, "imagen": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dulces",
+      "nombre": "Dulces",
+      "icono": "🍯",
+      "subcategorias": [
+        {
+          "id": "dulce-leche",
+          "nombre": "Dulce de Leche",
+          "productos": [
+            { "id": 15, "nombre": "Dulce de Leche Repostero La Serenísima (1kg)", "marca": "La Serenísima", "precio": 4200.00, "unidad": "unidad", "tags": ["SIN TACC"], "promo": null, "imagen": "" },
+            { "id": 16, "nombre": "Dulce de Leche Familiar Tregar (400g)", "marca": "Tregar", "precio": 2100.00, "unidad": "unidad", "tags": [], "promo": { "cantidad": 6, "precio": 1890.00 }, "imagen": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aceitunas",
+      "nombre": "Aceitunas",
+      "icono": "🫒",
+      "subcategorias": [
+        {
+          "id": "aceitunas-verdes",
+          "nombre": "Aceitunas Verdes",
+          "productos": [
+            { "id": 17, "nombre": "Aceitunas Verdes con Carozo (1kg)", "marca": "Nucete", "precio": 5600.00, "unidad": "unidad", "tags": ["SIN TACC"], "promo": null, "imagen": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sin-tacc",
+      "nombre": "Sin TACC",
+      "icono": "🌾",
+      "subcategorias": [
+        {
+          "id": "sin-tacc-varios",
+          "nombre": "Todos los productos Sin TACC",
+          "productos": []
+        }
+      ]
+    },
+    {
+      "id": "aderezos",
+      "nombre": "Aderezos",
+      "icono": "🫙",
+      "subcategorias": [
+        {
+          "id": "mayonesa",
+          "nombre": "Mayonesa y Mostaza",
+          "productos": [
+            { "id": 18, "nombre": "Mayonesa Hellmann's (500g)", "marca": "Hellmann's", "precio": 3200.00, "unidad": "unidad", "tags": [], "promo": { "cantidad": 6, "precio": 2880.00 }, "imagen": "" }
+          ]
+        }
+      ]
+    }
+  ]
+}
