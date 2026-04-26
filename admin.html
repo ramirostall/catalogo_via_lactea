@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Vía Láctea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <div class="login-logo">🧀</div>
+      <h2>Panel Administrador</h2>
+      <p>Vía Láctea Distribuciones</p>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" id="login-user" placeholder="admin" autocomplete="username"/>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <div class="login-error hidden" id="login-error">Usuario o contraseña incorrectos</div>
+      <button class="btn-primary" id="login-btn">Ingresar</button>
+    </div>
+  </div>
+
+  <!-- PANEL ADMIN -->
+  <div class="admin-wrap hidden" id="admin-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="assets/logo.png" alt="Logo" style="width: 40px; height: 40px; object-fit: contain; background: #fff; border-radius: 6px; padding: 2px;" />
+        <div>
+          <div class="sidebar-title">Vía Láctea</div>
+          <div class="sidebar-sub">Panel Admin</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="productos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+          Productos
+        </button>
+        <button class="nav-item" data-view="nuevo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
+          Nuevo Producto
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="index.html" target="_blank" class="ver-catalogo-btn">Ver catálogo →</a>
+        <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="admin-main">
+
+      <!-- VIEW: LISTA DE PRODUCTOS -->
+      <div class="view active" id="view-productos">
+        <div class="view-header">
+          <div>
+            <h1>Productos</h1>
+            <p id="productos-count">Cargando…</p>
+          </div>
+          <div class="header-actions">
+            <input type="search" id="admin-search" placeholder="Buscar…" class="admin-search"/>
+            <select id="admin-filter-cat" class="admin-sel">
+              <option value="">Todas las categorías</option>
+              <option value="quesos">Quesos</option>
+              <option value="fiambres">Fiambres</option>
+              <option value="dulces">Dulces</option>
+              <option value="aceitunas">Aceitunas</option>
+              <option value="aderezos">Aderezos</option>
+            </select>
+          </div>
+        </div>
+        <div class="productos-table-wrap">
+          <table class="productos-table">
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Marca</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="productos-tbody"></tbody>
+          </table>
+          <div class="loading" id="admin-loading">
+            <div class="spinner"></div>
+            <p>Cargando productos…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: NUEVO / EDITAR PRODUCTO -->
+      <div class="view" id="view-nuevo">
+        <div class="view-header">
+          <div>
+            <h1 id="form-title">Nuevo Producto</h1>
+            <p>Completá los datos del producto</p>
+          </div>
+          <button class="btn-secondary" id="btn-cancelar">← Volver</button>
+        </div>
+
+        <div class="form-grid">
+          <input type="hidden" id="prod-id" />
+
+          <div class="form-card">
+            <h3>Información básica</h3>
+            <div class="form-group">
+              <label>Nombre del producto *</label>
+              <input type="text" id="prod-nombre" placeholder="Ej: Cremoso La Serenísima" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Marca *</label>
+                <input type="text" id="prod-marca" placeholder="Ej: La Serenísima" />
+              </div>
+              <div class="form-group">
+                <label>Unidad *</label>
+                <input type="text" id="prod-unidad" placeholder="Ej: kg, unidad, pack" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Categoría *</label>
+                <select id="prod-categoria">
+                  <option value="">Seleccioná…</option>
+                  <option value="quesos">🧀 Quesos</option>
+                  <option value="fiambres">🥩 Fiambres</option>
+                  <option value="dulces">🍯 Dulces</option>
+                  <option value="aceitunas">🫒 Aceitunas</option>
+                  <option value="aderezos">🫙 Aderezos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Subcategoría</label>
+                <input type="text" id="prod-subcategoria" placeholder="Ej: Cremoso y Port Salut" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3>Precios</h3>
+            <div class="form-group">
+              <label>Precio unitario (ARS) *</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input type="number" id="prod-precio" placeholder="0.00" step="0.01" min="0" />
+              </div>
+            </div>
+            <div class="promo-toggle">
+              <label class="toggle-label">
+                <input type="checkbox" id="tiene-promo" />
+                <span class="toggle-slider"></span>
+                Tiene precio promocional
+              </label>
+            </div>
+            <div class="promo-fields hidden" id="promo-fields">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Cantidad mínima para promo</label>
+                  <input type="number" id="prod-promo-cant" placeholder="Ej: 4" min="1" />
+                </div>
+                <div class="form-group">
+                  <label>Precio promocional (ARS)</label>
+                  <div class="input-prefix">
+                    <span>$</span>
+                    <input type="number" id="prod-promo-precio" placeholder="0.00" step="0.01" min="0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3>Imagen del producto</h3>
+            <div class="upload-area" id="upload-area">
+              <div class="upload-preview hidden" id="upload-preview">
+                <img id="preview-img" src="" alt="preview" />
+                <button class="remove-img-btn" id="remove-img">✕</button>
+              </div>
+              <div class="upload-placeholder" id="upload-placeholder">
+                <div class="upload-icon">📷</div>
+                <p>Hacé clic o arrastrá una imagen</p>
+                <span>JPG, PNG, WEBP — Máx. 5MB</span>
+              </div>
+              <input type="file" id="img-input" accept="image/*" style="display:none"/>
+            </div>
+            <div class="upload-progress hidden" id="upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+              <span id="progress-text">Subiendo…</span>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3>Etiquetas</h3>
+            <label class="tag-label">
+              <input type="checkbox" id="tag-sintacc" />
+              🌾 Sin TACC
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <div class="form-msg hidden" id="form-msg"></div>
+          <button class="btn-secondary" id="btn-cancelar2">Cancelar</button>
+          <button class="btn-primary" id="btn-guardar">
+            <span id="btn-guardar-txt">Guardar producto</span>
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL CONFIRMAR BORRAR -->
+  <div class="modal-overlay hidden" id="modal-delete">
+    <div class="modal">
+      <h3>¿Eliminar producto?</h3>
+      <p id="modal-delete-name">Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+        <button class="btn-danger" id="modal-confirm">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
