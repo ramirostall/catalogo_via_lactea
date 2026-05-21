@@ -518,6 +518,90 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   outline: none;
   transition: border-color .18s;
 }
+
+@media (max-width: 980px) {
+  .admin-wrap {
+    flex-direction: column;
+  }
+  .sidebar {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+  }
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+  .nav-item {
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+    text-align: center;
+  }
+  .sidebar-footer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+  .ver-catalogo-btn,
+  .logout-btn {
+    width: 100%;
+  }
+  .admin-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .admin-search,
+  .admin-sel {
+    width: 100%;
+  }
+  .productos-table-wrap {
+    overflow-x: auto;
+  }
+  .productos-table th,
+  .productos-table td {
+    white-space: nowrap;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .form-card {
+    padding: 20px;
+  }
+  .upload-preview img {
+    width: 100%;
+    height: auto;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .form-actions button {
+    width: 100%;
+  }
+  .sidebar-brand,
+  .sidebar-footer {
+    justify-content: center;
+    text-align: center;
+  }
+}
 .admin-search:focus, .admin-sel:focus { border-color: var(--verde); }
 .admin-search { min-width: 200px; }
 

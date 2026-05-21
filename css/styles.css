@@ -444,8 +444,45 @@ body {
 
 /* ── RESPONSIVE ───────────────────────────────────────── */
 @media (max-width: 640px) {
-  .search-row { flex-direction: column; }
-  .filter-sel, .search-input-box { width: 100%; }
-  .productos-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-  .hero { padding: 60px 20px 80px; }
+  .hero {
+    padding: 60px 16px 80px;
+  }
+  .btn-login-header {
+    top: 16px;
+    right: 16px;
+    padding: 8px 12px;
+    font-size: .82rem;
+  }
+  .hero-desc {
+    max-width: 100%;
+    font-size: .95rem;
+  }
+  .search-row {
+    flex-direction: column;
+  }
+  .filter-sel,
+  .search-input-box {
+    width: 100%;
+  }
+  .search-wrap {
+    margin-top: 20px;
+  }
+  .main {
+    margin: 24px auto 80px;
+    padding: 0 16px;
+  }
+  .productos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .product-card {
+    padding: 16px;
+  }
+  .footer {
+    padding: 36px 16px;
+  }
+  .wa-btn {
+    bottom: 18px;
+    right: 18px;
+  }
 }
