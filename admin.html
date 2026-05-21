@@ -16,17 +16,22 @@
     <div class="login-box">
       <div class="login-logo">🧀</div>
       <h2>Panel Administrador</h2>
-      <p>Vía Láctea Distribuciones</p>
+      <p>Vía Láctea Distribuidora Mayorista</p>
       <div class="form-group">
-        <label>Usuario</label>
-        <input type="text" id="login-user" placeholder="admin" autocomplete="username"/>
+        <label>Correo electrónico</label>
+        <input type="email" id="login-user" placeholder="admin@example.com" autocomplete="username"/>
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+        <div class="password-wrapper">
+          <input type="password" id="login-pass" placeholder="********" autocomplete="current-password"/>
+          <button class="password-toggle" id="toggle-pass" type="button" aria-label="Mostrar contraseña">👁</button>
+        </div>
       </div>
-      <div class="login-error hidden" id="login-error">Usuario o contraseña incorrectos</div>
+      <div class="login-error hidden" id="login-error">Email o contraseña incorrectos</div>
       <button class="btn-primary" id="login-btn">Ingresar</button>
+      <button class="btn-secondary" id="register-btn" type="button">Registrarse</button>
+      <p class="login-note">Bienvenido a Vía Láctea. Pedí el cambio de rol admin con quien administra tu cuenta.</p>
     </div>
   </div>
 
@@ -74,8 +79,12 @@
               <option value="">Todas las categorías</option>
               <option value="quesos">Quesos</option>
               <option value="fiambres">Fiambres</option>
+              <option value="lacteos">Lácteos</option>
               <option value="dulces">Dulces</option>
               <option value="aceitunas">Aceitunas</option>
+              <option value="copetin">Copetín</option>
+              <option value="congelados">Congelados</option>
+              <option value="pastas">Pastas</option>
               <option value="aderezos">Aderezos</option>
             </select>
           </div>
@@ -137,8 +146,12 @@
                   <option value="">Seleccioná…</option>
                   <option value="quesos">🧀 Quesos</option>
                   <option value="fiambres">🥩 Fiambres</option>
+                  <option value="lacteos">🥛 Lácteos</option>
                   <option value="dulces">🍯 Dulces</option>
                   <option value="aceitunas">🫒 Aceitunas</option>
+                  <option value="copetin">🍿 Copetín</option>
+                  <option value="congelados">❄️ Congelados</option>
+                  <option value="pastas">🍝 Pastas</option>
                   <option value="aderezos">🫙 Aderezos</option>
                 </select>
               </div>

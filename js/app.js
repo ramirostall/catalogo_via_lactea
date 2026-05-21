@@ -3,7 +3,7 @@ import { db, CATEGORIAS, fmt, getImageUrl } from './supabase.js'
 let todos = []
 
 /* ── Icono placeholder ─────────────────────────────────── */
-const iconoCat = id => ({ quesos:'🧀', fiambres:'🥩', dulces:'🍯', aceitunas:'🫒', aderezos:'🫙' }[id] ?? '📦')
+const iconoCat = id => ({ quesos:'🧀', fiambres:'🥩', lacteos:'🥛', dulces:'🍯', aceitunas:'🫒', copetin:'🍿', congelados:'❄️', pastas:'🍝', aderezos:'🫙' }[id] ?? '📦')
 
 /* ── Construir tarjeta ─────────────────────────────────── */
 function buildCard(p) {
@@ -25,10 +25,12 @@ function buildCard(p) {
        </div>`
     : ''
 
+  const catName = (CATEGORIAS[p.categoria]?.nombre || p.categoria || '').toLowerCase()
   return `
     <div class="product-card"
          data-id="${p.id}"
          data-cat="${p.categoria}"
+         data-cat-name="${catName}"
          data-nombre="${(p.nombre||'').toLowerCase()}"
          data-marca="${(p.marca||'').toLowerCase()}"
          data-promo="${p.promo_cantidad ? '1' : ''}">
@@ -145,7 +147,7 @@ function aplicarFiltros() {
 
   document.querySelectorAll('.product-card').forEach(card => {
     const ok =
-      (!q || card.dataset.nombre.includes(q) || card.dataset.marca.includes(q)) &&
+      (!q || card.dataset.nombre.includes(q) || card.dataset.marca.includes(q) || card.dataset.cat.includes(q) || card.dataset.catName.includes(q)) &&
       (!marca || card.dataset.marca === marca) &&
       (!soloPromo || card.dataset.promo === '1')
     card.style.display = ok ? '' : 'none'

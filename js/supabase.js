@@ -7,11 +7,15 @@ export const db = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // Categorías con su info
 export const CATEGORIAS = {
-  quesos:    { nombre: 'Quesos',    icono: '🧀' },
-  fiambres:  { nombre: 'Fiambres',  icono: '🥩' },
-  dulces:    { nombre: 'Dulces',    icono: '🍯' },
-  aceitunas: { nombre: 'Aceitunas', icono: '🫒' },
-  aderezos:  { nombre: 'Aderezos',  icono: '🫙' },
+  quesos:     { nombre: 'Quesos',     icono: '🧀' },
+  fiambres:   { nombre: 'Fiambres',   icono: '🥩' },
+  lacteos:    { nombre: 'Lácteos',    icono: '🥛' },
+  dulces:     { nombre: 'Dulces',     icono: '🍯' },
+  aceitunas:  { nombre: 'Aceitunas',  icono: '🫒' },
+  copetin:    { nombre: 'Copetín',    icono: '🍿' },
+  congelados: { nombre: 'Congelados', icono: '❄️' },
+  pastas:     { nombre: 'Pastas',     icono: '🍝' },
+  aderezos:   { nombre: 'Aderezos',   icono: '🫙' },
 }
 
 export const fmt = n =>

@@ -1,8 +1,4 @@
-import { db, fmt, getImageUrl } from './supabase.js'
-
-// ── CREDENCIALES ADMIN (cambiá esto!) ──────────────────────
-const ADMIN_USER = 'vialactea'
-const ADMIN_PASS = 'vialactea2024'
+import { db, CATEGORIAS, fmt, getImageUrl } from './supabase.js'
 
 let productos = []
 let editandoId = null
@@ -10,33 +6,125 @@ let borrandoId = null
 let imagenPath = null // path en storage
 
 /* ══════════════════════════════════════════════════════════
-   LOGIN
+   AUTENTICACIÓN
 ══════════════════════════════════════════════════════════ */
-function checkLogin() {
-  return sessionStorage.getItem('admin_ok') === '1'
+async function initAuth() {
+  const { data: { session } } = await db.auth.getSession()
+  if (session) {
+    await verifyAdmin(session)
+    return
+  }
+
+  showLogin()
+  db.auth.onAuthStateChange(async (_event, authSession) => {
+    if (authSession?.session) await verifyAdmin(authSession.session)
+    else showLogin()
+  })
 }
 
-document.getElementById('login-btn').addEventListener('click', () => {
-  const u = document.getElementById('login-user').value.trim()
-  const p = document.getElementById('login-pass').value
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
-    sessionStorage.setItem('admin_ok', '1')
-    document.getElementById('login-overlay').classList.add('hidden')
-    document.getElementById('admin-wrap').classList.remove('hidden')
-    cargarProductos()
+function clearLoginFields() {
+  document.getElementById('login-user').value = ''
+  document.getElementById('login-pass').value = ''
+}
+
+function showLogin(message = '') {
+  document.getElementById('login-overlay').classList.remove('hidden')
+  document.getElementById('admin-wrap').classList.add('hidden')
+  clearLoginFields()
+  const errorEl = document.getElementById('login-error')
+  if (message) {
+    errorEl.textContent = message
+    errorEl.classList.remove('hidden')
   } else {
-    document.getElementById('login-error').classList.remove('hidden')
+    errorEl.classList.add('hidden')
   }
-})
+}
+
+async function activateAdmin() {
+  document.getElementById('login-overlay').classList.add('hidden')
+  document.getElementById('admin-wrap').classList.remove('hidden')
+  await cargarProductos()
+}
+
+document.getElementById('login-btn').addEventListener('click', loginWithEmail)
+document.getElementById('register-btn').addEventListener('click', registerWithEmail)
+
+async function verifyAdmin(session) {
+  const userId = session.user?.id
+  if (!userId) {
+    await db.auth.signOut()
+    showLogin('No se detectó sesión válida.')
+    return
+  }
+
+  const { data, error } = await db.from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single()
+
+  if (error || !data || data.role !== 'admin') {
+    await db.auth.signOut()
+    showLogin('No tenés permisos de administrador.')
+    return
+  }
+
+  activateAdmin()
+}
 
 document.getElementById('login-pass').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('login-btn').click()
 })
 
-document.getElementById('logout-btn').addEventListener('click', () => {
-  sessionStorage.removeItem('admin_ok')
-  location.reload()
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await db.auth.signOut()
+  showLogin()
 })
+
+document.getElementById('toggle-pass').addEventListener('click', () => {
+  const input = document.getElementById('login-pass')
+  const btn = document.getElementById('toggle-pass')
+  const isPassword = input.type === 'password'
+  input.type = isPassword ? 'text' : 'password'
+  btn.textContent = isPassword ? '🙈' : '👁️'
+})
+
+async function loginWithEmail() {
+  const email = document.getElementById('login-user').value.trim()
+  const password = document.getElementById('login-pass').value
+  if (!email || !password) {
+    document.getElementById('login-error').textContent = 'Completá email y contraseña'
+    document.getElementById('login-error').classList.remove('hidden')
+    return
+  }
+
+  const { error, data } = await db.auth.signInWithPassword({ email, password })
+  if (error) {
+    document.getElementById('login-error').textContent = error.message
+    document.getElementById('login-error').classList.remove('hidden')
+    return
+  }
+
+  await verifyAdmin(data.session)
+}
+
+async function registerWithEmail() {
+  const email = document.getElementById('login-user').value.trim()
+  const password = document.getElementById('login-pass').value
+  if (!email || !password) {
+    document.getElementById('login-error').textContent = 'Completá email y contraseña para registrarte.'
+    document.getElementById('login-error').classList.remove('hidden')
+    return
+  }
+
+  const { error } = await db.auth.signUp({ email, password })
+  if (error) {
+    document.getElementById('login-error').textContent = error.message
+    document.getElementById('login-error').classList.remove('hidden')
+    return
+  }
+
+  showLogin('Te registraste correctamente. Pedí el cambio de rol admin con quien administra el proyecto.')
+}
 
 /* ══════════════════════════════════════════════════════════
    NAVEGACIÓN
@@ -79,7 +167,8 @@ function renderTabla(lista) {
   }
   tbody.innerHTML = lista.map(p => {
     const imgUrl = getImageUrl(p.imagen)
-    const catEmoji = { quesos: '🧀', fiambres: '🥩', dulces: '🍯', aceitunas: '🫒', aderezos: '🫙' }[p.categoria] ?? '📦'
+    const catLabel = CATEGORIAS[p.categoria]?.nombre || p.categoria
+    const catEmoji = CATEGORIAS[p.categoria]?.icono || '📦'
     return `
       <tr data-id="${p.id}">
         <td class="td-img">
@@ -90,7 +179,7 @@ function renderTabla(lista) {
           <div class="td-sub">${p.subcategoria || ''}</div>
         </td>
         <td>${p.marca}</td>
-        <td><span class="cat-badge">${catEmoji} ${p.categoria}</span></td>
+        <td><span class="cat-badge">${catEmoji} ${catLabel}</span></td>
         <td class="td-precio">$${fmt(p.precio)}<br><small>/ ${p.unidad}</small></td>
         <td class="td-actions">
           <button class="btn-edit" data-id="${p.id}">Editar</button>
@@ -342,8 +431,4 @@ function mostrarMsg(txt, tipo) {
 }
 
 /* ── Init ─────────────────────────────────────────────── */
-if (checkLogin()) {
-  document.getElementById('login-overlay').classList.add('hidden')
-  document.getElementById('admin-wrap').classList.remove('hidden')
-  cargarProductos()
-}
+initAuth()
