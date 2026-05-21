@@ -441,6 +441,7 @@ body {
 }
 .wa-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.5); }
 .wa-btn svg { width: 30px; fill: #fff; }
+.wa-btn img { width: 34px; height: 34px; object-fit: contain; display: block; }
 
 /* ── RESPONSIVE ───────────────────────────────────────── */
 @media (max-width: 640px) {

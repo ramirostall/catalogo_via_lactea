@@ -9,7 +9,18 @@ let imagenPath = null // path en storage
    AUTENTICACIÓN
 ══════════════════════════════════════════════════════════ */
 async function initAuth() {
+  const params = new URLSearchParams(window.location.search)
+  const forceLogin = params.get('forceLogin')
+
   const { data: { session } } = await db.auth.getSession()
+
+  if (forceLogin) {
+    // If the link requested a forced login, sign out current session and show login overlay
+    try { await db.auth.signOut() } catch (e) { /* ignore */ }
+    showLogin()
+    return
+  }
+
   if (session) {
     await verifyAdmin(session)
     return
