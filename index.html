@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vía Láctea Distribuciones — Catálogo Mayorista</title>
+  <link rel="icon" href="assets/logo.png" sizes="32x32" />
   <meta name="description" content="Catálogo mayorista de quesos, fiambres, dulces y más." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,33 +16,70 @@
 </head>
 
 <body>
-
+  <a href="admin.html" class="btn-login-header" title="Panel admin">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <polyline points="10 17 15 12 10 7" />
+      <line x1="15" y1="12" x2="3" y2="12" />
+    </svg>
+    Admin
+  </a>
   <!-- HERO -->
   <header class="hero">
-    <a href="admin.html?forceLogin=1" class="btn-login-header">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-        <polyline points="10 17 15 12 10 7" />
-        <line x1="15" y1="12" x2="3" y2="12" />
-      </svg>
-      Admin
-    </a>
-    <div class="hero-grain"></div>
-    <div class="hero-content">
-      <img src="assets/logo.png" alt="Distribuidora Vía Láctea"
-        style="max-width: 280px; width: 100%; height: auto; margin: 0 auto 24px; display: block; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" />
-      <div class="hero-badge">DISTRIBUIDORA MAYORISTA</div>
-      <p class="hero-sub" style="margin-top: -10px;">Quesos · Fiambres · Directo de fabrica</p>
-      <p class="hero-desc">Catálogo de precios mayoristas. Los valores son orientativos, consultá por WhatsApp para
-        confirmar disponibilidad.</p>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <div class="hero-badge">DISTRIBUIDORA MAYORISTA</div>
+    <h1 class="hero-title">
+      Distribución mayorista<br>
+      <span class="hero-title-highlight">de lácteos y alimentos</span>
+    </h1>
+    <p class="hero-sub">Quesos · Fiambres · Lácteos · Aceitunas y más</p>
+    <p class="hero-desc">Directo de fábrica a tu negocio.</p>
+    <div class="hero-features">
+      <div class="feature">
+        <div class="feature-ico">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FBC02D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <strong>Entrega rápida</strong>
+          <div class="feature-sub">En toda la zona</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FBC02D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <strong>Productos de calidad</strong>
+          <div class="feature-sub">Primeras marcas</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-ico">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FBC02D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <strong>Atención personalizada</strong>
+          <div class="feature-sub">Asesoramiento para tu negocio</div>
+        </div>
+      </div>
     </div>
-    <div class="hero-wave">
-      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--bg)" />
-      </svg>
-    </div>
-  </header>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--bg)"/>
+    </svg>
+  </div>
+</header>
 
   <!-- NAV CATEGORÍAS -->
   <nav class="nav-cats" id="nav-cats-wrap">

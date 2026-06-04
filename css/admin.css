@@ -6,11 +6,12 @@
   --bg:          #FFFDF8;
   --surface:     #FFFFFF;
   --border:      #F2E6CE;
-  --verde:       #D32F2F; /* Rojo logo principal */
-  --verde-light: #E53935;
+  --rojo:        #D32F2F; /* Rojo principal */
+  --rojo-light:  #E53935;
+  --verde:       #2A8038; /* Verde contraste (badges, accents) */
   --dorado:      #FBC02D;
-  --rojo:        #B71C1C; /* Dark red para delete buttons */
-  --rojo-light:  #FFEBEE; /* Light background para el danger state */
+  --rojo-dark:   #B71C1C; /* dark red for delete buttons */
+  --rojo-muted:  #FFEBEE; /* light background for danger state */
   --texto:       #212121;
   --texto-muted: #757575;
   --radius:      12px;
@@ -51,7 +52,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 /* ── LOGIN ────────────────────────────────────────────── */
 .login-overlay {
   position: fixed; inset: 0;
-  background: var(--verde);
+  background: var(--rojo);
   display: flex; align-items: center; justify-content: center;
   z-index: 9999;
 }
@@ -68,7 +69,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .login-box h2 {
   font-family: 'Playfair Display', serif;
   font-size: 1.6rem;
-  color: var(--verde);
+  color: var(--rojo);
   margin-bottom: 4px;
 }
 .login-box > p { font-size: .88rem; color: var(--texto-muted); margin-bottom: 28px; }
@@ -90,7 +91,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 /* ── SIDEBAR ──────────────────────────────────────────── */
 .sidebar {
   width: var(--sidebar-w);
-  background: var(--verde);
+  background: var(--rojo);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -199,7 +200,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .view-header h1 {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
-  color: var(--verde);
+  color: var(--rojo);
 }
 .view-header p { color: var(--texto-muted); font-size: .88rem; margin-top: 4px; }
 .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -252,7 +253,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .td-nombre { font-weight: 600; }
 .td-sub { font-size: .78rem; color: var(--texto-muted); margin-top: 2px; }
-.td-precio { font-weight: 600; color: var(--verde); }
+.td-precio { font-weight: 600; color: var(--rojo); }
 .td-precio small { font-weight: 400; color: var(--texto-muted); }
 .td-actions { display: flex; gap: 8px; }
 .cat-badge {
@@ -330,7 +331,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .password-toggle:focus {
   outline: none;
 }
-.form-group input:focus, .form-group select:focus { border-color: var(--verde); background: #fff; }
+.form-group input:focus, .form-group select:focus { border-color: var(--rojo); background: #fff; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .input-prefix { display: flex; align-items: center; }
 .input-prefix span {
@@ -373,7 +374,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   transition: transform .2s;
   box-shadow: 0 1px 4px rgba(0,0,0,.2);
 }
-.toggle-label input:checked + .toggle-slider { background: var(--verde); }
+.toggle-label input:checked + .toggle-slider { background: var(--rojo); }
 .toggle-label input:checked + .toggle-slider::after { transform: translateX(18px); }
 
 /* ── UPLOAD ───────────────────────────────────────────── */
@@ -390,7 +391,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   justify-content: center;
 }
 .upload-area:hover, .upload-area.drag-over {
-  border-color: var(--verde);
+  border-color: var(--rojo);
   background: rgba(28,58,43,.03);
 }
 .upload-placeholder { text-align: center; pointer-events: none; }
@@ -429,7 +430,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .progress-fill {
   height: 100%;
-  background: var(--verde);
+  background: var(--rojo);
   border-radius: 100px;
   transition: width .3s;
 }
@@ -444,7 +445,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   cursor: pointer;
   font-weight: 500;
 }
-.tag-label input { accent-color: var(--verde); width: 18px; height: 18px; cursor: pointer; }
+.tag-label input { accent-color: var(--rojo); width: 18px; height: 18px; cursor: pointer; }
 
 /* ── FORM ACTIONS ─────────────────────────────────────── */
 .form-actions {
@@ -467,9 +468,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .form-msg.error { background: var(--rojo-light); color: var(--rojo); }
 
 /* ── BOTONES ──────────────────────────────────────────── */
+.login-note {
+  margin-top: 18px;
+  color: var(--texto-muted);
+  font-size: .92rem;
+  line-height: 1.5;
+}
 .btn-primary {
   padding: 11px 24px;
-  background: var(--verde);
+  background: var(--rojo);
   color: #fff;
   border: none;
   border-radius: 9px;
@@ -479,7 +486,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   cursor: pointer;
   transition: background .18s;
 }
-.btn-primary:hover:not(:disabled) { background: var(--verde-light); }
+.btn-primary:hover:not(:disabled) { background: var(--rojo-light); }
 .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
 .btn-secondary {
   padding: 11px 20px;
@@ -497,7 +504,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .btn-edit {
   padding: 6px 14px;
   background: rgba(28,58,43,.08);
-  color: var(--verde);
+  color: var(--rojo);
   border: none;
   border-radius: 7px;
   font-family: 'DM Sans', sans-serif;
@@ -629,7 +636,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     text-align: center;
   }
 }
-.admin-search:focus, .admin-sel:focus { border-color: var(--verde); }
+.admin-search:focus, .admin-sel:focus { border-color: var(--rojo); }
 .admin-search { min-width: 200px; }
 
 /* ── MODAL ────────────────────────────────────────────── */
@@ -661,7 +668,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .spinner {
   width: 32px; height: 32px;
   border: 3px solid var(--border);
-  border-top-color: var(--verde);
+  border-top-color: var(--rojo);
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
