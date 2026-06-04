@@ -75,7 +75,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .login-box > p { font-size: .88rem; color: var(--texto-muted); margin-bottom: 28px; }
 .login-error {
   background: var(--rojo-light);
-  color: var(--rojo);
+  color: #fff;
   padding: 10px;
   border-radius: 8px;
   font-size: .85rem;
@@ -517,7 +517,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .btn-delete {
   padding: 6px 14px;
   background: var(--rojo-light);
-  color: var(--rojo);
+  color: #fff;
   border: none;
   border-radius: 7px;
   font-family: 'DM Sans', sans-serif;

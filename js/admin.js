@@ -103,14 +103,14 @@ async function loginWithEmail() {
   const email = document.getElementById('login-user').value.trim()
   const password = document.getElementById('login-pass').value
   if (!email || !password) {
-    document.getElementById('login-error').textContent = 'Completá email y contraseña'
+    document.getElementById('login-error').textContent = 'Completá correo electrónico y contraseña'
     document.getElementById('login-error').classList.remove('hidden')
     return
   }
 
   const { error, data } = await db.auth.signInWithPassword({ email, password })
   if (error) {
-    document.getElementById('login-error').textContent = error.message
+    document.getElementById('login-error').textContent = translateAuthError(error)
     document.getElementById('login-error').classList.remove('hidden')
     return
   }
@@ -118,18 +118,32 @@ async function loginWithEmail() {
   await verifyAdmin(data.session)
 }
 
+function translateAuthError(error) {
+  const message = (error?.message || '').toLowerCase()
+  if (message.includes('already registered') || message.includes('already exists') || message.includes('duplicate') || message.includes('user already')) {
+    return 'Ese correo ya está registrado.'
+  }
+  if (message.includes('invalid email') || message.includes('email address is not valid') || message.includes('invalid login credentials')) {
+    return 'Correo electrónico inválido.'
+  }
+  if (message.includes('invalid password') || message.includes('password')) {
+    return 'Contraseña inválida.'
+  }
+  return error?.message || 'Ocurrió un error. Intentá nuevamente.'
+}
+
 async function registerWithEmail() {
   const email = document.getElementById('login-user').value.trim()
   const password = document.getElementById('login-pass').value
   if (!email || !password) {
-    document.getElementById('login-error').textContent = 'Completá email y contraseña para registrarte.'
+    document.getElementById('login-error').textContent = 'Completá correo electrónico y contraseña para registrarte.'
     document.getElementById('login-error').classList.remove('hidden')
     return
   }
 
   const { error } = await db.auth.signUp({ email, password })
   if (error) {
-    document.getElementById('login-error').textContent = error.message
+    document.getElementById('login-error').textContent = translateAuthError(error)
     document.getElementById('login-error').classList.remove('hidden')
     return
   }
