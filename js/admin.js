@@ -9,24 +9,11 @@ let imagenPath = null // path en storage
    AUTENTICACIÓN
 ══════════════════════════════════════════════════════════ */
 async function initAuth() {
-  const params = new URLSearchParams(window.location.search)
-  const forceLogin = params.get('forceLogin')
-
-  const { data: { user }, error } = await db.auth.getUser()
-
-  if (forceLogin) {
-    // If the link requested a forced login, sign out current session and show login overlay
-    try { await db.auth.signOut() } catch (e) { /* ignore */ }
-    showLogin()
-    return
-  }
-
-  if (user && !error) {
-    await verifyAdmin(user)
-    return
-  }
-
+  // Siempre arrancar deslogueado: el login aparece en blanco y el navegador
+  // ofrece autocompletar al hacer foco en el campo de mail.
+  try { await db.auth.signOut() } catch (e) { /* ignore */ }
   showLogin()
+
   db.auth.onAuthStateChange(async (_event, authSession) => {
     if (authSession?.session) await verifyAdmin(authSession.session.user)
     else showLogin()
@@ -42,6 +29,7 @@ function showLogin(message = '') {
   document.getElementById('login-overlay').classList.remove('hidden')
   document.getElementById('admin-wrap').classList.add('hidden')
   clearLoginFields()
+  setTimeout(clearLoginFields, 200)
   const errorEl = document.getElementById('login-error')
   if (message) {
     errorEl.textContent = message
