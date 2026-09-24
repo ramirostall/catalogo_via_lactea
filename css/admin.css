@@ -652,6 +652,35 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .modal .form-group small { color: var(--texto-muted); font-weight: 400; }
 .modal .form-msg { margin-bottom: 12px; }
 
+.emoji-row { display: flex; gap: 8px; align-items: center; }
+.emoji-row input { flex: 1; }
+.emoji-panel {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 8px;
+}
+.emoji-panel button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: transform .12s, border-color .12s;
+}
+.emoji-panel button:hover {
+  transform: scale(1.12);
+  border-color: var(--rojo);
+}
+
 /* ── MODAL ────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;

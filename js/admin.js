@@ -199,9 +199,11 @@ function renderTabla(lista) {
         <td>${p.marca}</td>
         <td><span class="cat-badge">${catEmoji} ${catLabel}</span></td>
         <td class="td-precio">$${fmt(p.precio)}<br><small>/ ${p.unidad}</small></td>
-        <td class="td-actions">
-          <button class="btn-edit" data-id="${p.id}">Editar</button>
-          <button class="btn-delete" data-id="${p.id}" data-nombre="${p.nombre}">Eliminar</button>
+        <td>
+          <div class="td-actions">
+            <button class="btn-edit" data-id="${p.id}">Editar</button>
+            <button class="btn-delete" data-id="${p.id}" data-nombre="${p.nombre}">Eliminar</button>
+          </div>
         </td>
       </tr>`
   }).join('')
@@ -465,9 +467,11 @@ function renderCategoriasTabla() {
       <td><code class="slug-code">${slug}</code></td>
       <td>${info.orden || 0}</td>
       <td>${conteo[slug] || 0}</td>
-      <td class="td-actions">
-        <button class="btn-edit" data-cat="${slug}">Editar</button>
-        <button class="btn-delete" data-cat="${slug}" data-catnombre="${info.nombre}">Eliminar</button>
+      <td>
+        <div class="td-actions">
+          <button class="btn-edit" data-cat="${slug}">Editar</button>
+          <button class="btn-delete" data-cat="${slug}" data-catnombre="${info.nombre}">Eliminar</button>
+        </div>
       </td>
     </tr>`)
 
@@ -489,9 +493,36 @@ function slugificar(nombre) {
     .replace(/^-+|-+$/g, '')
 }
 
+const CAT_EMOJIS = ['🧀','🥩','🥛','🍯','🫒','🍿','❄️','🍝','🫙','🥤','🍫','🍪','🍬','🧈','🥚','🍞','🌭','🍔','🍕','🌮','🥟','🍚','🫘','🥜','🍇','🍎','🍓','🍰','🧃','☕','🧊','🥗','📦','🛒','✨','🔥','⭐','🎁','🌾']
+
+function llenarPanelEmojis() {
+  const panel = document.getElementById('cat-emoji-panel')
+  panel.innerHTML = CAT_EMOJIS.map(e => `<button type="button" data-emoji="${e}">${e}</button>`).join('')
+  panel.querySelectorAll('button').forEach(btn =>
+    btn.addEventListener('click', () => {
+      document.getElementById('cat-icono').value = btn.dataset.emoji
+      panel.classList.add('hidden')
+    }))
+}
+llenarPanelEmojis()
+
+document.getElementById('cat-emoji-btn').addEventListener('click', e => {
+  e.stopPropagation()
+  const panel = document.getElementById('cat-emoji-panel')
+  panel.classList.toggle('hidden')
+})
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('cat-emoji-panel')
+  if (!e.target.closest('#cat-emoji-btn') && !e.target.closest('#cat-emoji-panel')) {
+    panel.classList.add('hidden')
+  }
+})
+
 function abrirModalCategoria(slug = null) {
   editandoCatId = slug || null
   document.getElementById('cat-msg').classList.add('hidden')
+  document.getElementById('cat-emoji-panel').classList.add('hidden')
   document.getElementById('cat-nombre').value = ''
   document.getElementById('cat-icono').value = ''
   document.getElementById('cat-orden').value = ''

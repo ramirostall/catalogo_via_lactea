@@ -281,7 +281,11 @@
       </div>
       <div class="form-group">
         <label>Icono (emoji)</label>
-        <input type="text" id="cat-icono" placeholder="Ej: 🥤" />
+        <div class="emoji-row">
+          <input type="text" id="cat-icono" placeholder="Ej: 🥤" />
+          <button class="btn-secondary" id="cat-emoji-btn" type="button">😊 Elegir</button>
+        </div>
+        <div class="emoji-panel hidden" id="cat-emoji-panel"></div>
       </div>
       <div class="form-group">
         <label>Posición (orden <small>— menor primero</small>)</label>
