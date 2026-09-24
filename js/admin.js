@@ -12,7 +12,7 @@ async function initAuth() {
   const params = new URLSearchParams(window.location.search)
   const forceLogin = params.get('forceLogin')
 
-  const { data: { session } } = await db.auth.getSession()
+  const { data: { user }, error } = await db.auth.getUser()
 
   if (forceLogin) {
     // If the link requested a forced login, sign out current session and show login overlay
@@ -21,14 +21,14 @@ async function initAuth() {
     return
   }
 
-  if (session) {
-    await verifyAdmin(session)
+  if (user && !error) {
+    await verifyAdmin(user)
     return
   }
 
   showLogin()
   db.auth.onAuthStateChange(async (_event, authSession) => {
-    if (authSession?.session) await verifyAdmin(authSession.session)
+    if (authSession?.session) await verifyAdmin(authSession.session.user)
     else showLogin()
   })
 }
@@ -60,8 +60,8 @@ async function activateAdmin() {
 document.getElementById('login-btn').addEventListener('click', loginWithEmail)
 document.getElementById('register-btn').addEventListener('click', registerWithEmail)
 
-async function verifyAdmin(session) {
-  const userId = session.user?.id
+async function verifyAdmin(user) {
+  const userId = user?.id
   if (!userId) {
     await db.auth.signOut()
     showLogin('No se detectó sesión válida.')
@@ -115,7 +115,7 @@ async function loginWithEmail() {
     return
   }
 
-  await verifyAdmin(data.session)
+  await verifyAdmin(data.user || data.session?.user)
 }
 
 function translateAuthError(error) {
@@ -237,9 +237,16 @@ function filtrarTabla() {
 /* ══════════════════════════════════════════════════════════
    FORMULARIO NUEVO / EDITAR
 ══════════════════════════════════════════════════════════ */
+function resetImagenUi() {
+  imagenPath = null
+  document.getElementById('img-input').value = ''
+  document.getElementById('preview-img').src = ''
+  document.getElementById('upload-preview').classList.add('hidden')
+  document.getElementById('upload-placeholder').classList.remove('hidden')
+}
+
 function nuevoProducto() {
   editandoId = null
-  imagenPath = null
   limpiarForm()
   document.getElementById('form-title').textContent = 'Nuevo Producto'
   document.getElementById('btn-guardar-txt').textContent = 'Guardar producto'
@@ -250,6 +257,7 @@ function editarProducto(id) {
   const p = productos.find(x => x.id === id)
   if (!p) return
   editandoId = id
+  resetImagenUi()
   imagenPath = p.imagen || null
 
   document.getElementById('prod-id').value = p.id
@@ -292,11 +300,8 @@ function limpiarForm() {
   document.getElementById('tiene-promo').checked = false
   document.getElementById('promo-fields').classList.add('hidden')
   document.getElementById('tag-sintacc').checked = false
-  document.getElementById('upload-preview').classList.add('hidden')
-  document.getElementById('upload-placeholder').classList.remove('hidden')
-  document.getElementById('img-input').value = ''
+  resetImagenUi()
   document.getElementById('form-msg').classList.add('hidden')
-  imagenPath = null
 }
 
 document.getElementById('tiene-promo').addEventListener('change', e => {
@@ -417,10 +422,7 @@ function previewFile(file) {
 
 document.getElementById('remove-img').addEventListener('click', e => {
   e.stopPropagation()
-  document.getElementById('upload-preview').classList.add('hidden')
-  document.getElementById('upload-placeholder').classList.remove('hidden')
-  imgInput.value = ''
-  imagenPath = null
+  resetImagenUi()
 })
 
 /* ══════════════════════════════════════════════════════════
