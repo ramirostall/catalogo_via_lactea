@@ -1,4 +1,4 @@
-import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl } from './supabase.js'
+import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl, esc } from './supabase.js'
 
 let productos = []
 let editandoId = null
@@ -190,19 +190,19 @@ function renderTabla(lista) {
     return `
       <tr data-id="${p.id}">
         <td class="td-img">
-          ${imgUrl ? `<img src="${imgUrl}" alt="${p.nombre}" class="thumb">` : `<div class="thumb-ph">${catEmoji}</div>`}
+          ${imgUrl ? `<img src="${esc(imgUrl)}" alt="${esc(p.nombre)}" class="thumb">` : `<div class="thumb-ph">${esc(catEmoji)}</div>`}
         </td>
         <td>
-          <div class="td-nombre">${p.nombre}</div>
-          <div class="td-sub">${p.subcategoria || ''}</div>
+          <div class="td-nombre">${esc(p.nombre)}</div>
+          <div class="td-sub">${esc(p.subcategoria || '')}</div>
         </td>
-        <td>${p.marca}</td>
-        <td><span class="cat-badge">${catEmoji} ${catLabel}</span></td>
-        <td class="td-precio">$${fmt(p.precio)}<br><small>/ ${p.unidad}</small></td>
+        <td>${esc(p.marca)}</td>
+        <td><span class="cat-badge">${esc(catEmoji)} ${esc(catLabel)}</span></td>
+        <td class="td-precio">$${fmt(p.precio)}<br><small>/ ${esc(p.unidad)}</small></td>
         <td>
           <div class="td-actions">
             <button class="btn-edit" data-id="${p.id}">Editar</button>
-            <button class="btn-delete" data-id="${p.id}" data-nombre="${p.nombre}">Eliminar</button>
+            <button class="btn-delete" data-id="${p.id}" data-nombre="${esc(p.nombre)}">Eliminar</button>
           </div>
         </td>
       </tr>`
@@ -397,17 +397,34 @@ uploadArea.addEventListener('click', e => {
   if (!e.target.closest('#remove-img')) imgInput.click()
 })
 
+const MAX_IMG_MB = 5
+const MAX_IMG_SIZE = MAX_IMG_MB * 1024 * 1024
+
+function validarImagen(file) {
+  if (!file.type.startsWith('image/')) {
+    alert('Formato no válido. Seleccioná un archivo de imagen.')
+    imgInput.value = ''
+    return false
+  }
+  if (file.size > MAX_IMG_SIZE) {
+    alert(`La imagen supera el tamaño máximo de ${MAX_IMG_MB} MB.`)
+    imgInput.value = ''
+    return false
+  }
+  return true
+}
+
 uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over') })
 uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'))
 uploadArea.addEventListener('drop', e => {
   e.preventDefault()
   uploadArea.classList.remove('drag-over')
   const file = e.dataTransfer.files[0]
-  if (file && file.type.startsWith('image/')) previewFile(file)
+  if (file && validarImagen(file)) previewFile(file)
 })
 
 imgInput.addEventListener('change', () => {
-  if (imgInput.files[0]) previewFile(imgInput.files[0])
+  if (imgInput.files[0] && validarImagen(imgInput.files[0])) previewFile(imgInput.files[0])
 })
 
 function previewFile(file) {
@@ -460,17 +477,17 @@ function renderCategoriasTabla() {
 
   const filas = ordenCategorias().map(([slug, info]) => `
     <tr data-slug="${slug}">
-      <td class="td-emoji">${info.icono}</td>
+      <td class="td-emoji">${esc(info.icono)}</td>
       <td>
-        <div class="td-nombre">${info.nombre}</div>
+        <div class="td-nombre">${esc(info.nombre)}</div>
       </td>
-      <td><code class="slug-code">${slug}</code></td>
+      <td><code class="slug-code">${esc(slug)}</code></td>
       <td>${info.orden || 0}</td>
       <td>${conteo[slug] || 0}</td>
       <td>
         <div class="td-actions">
           <button class="btn-edit" data-cat="${slug}">Editar</button>
-          <button class="btn-delete" data-cat="${slug}" data-catnombre="${info.nombre}">Eliminar</button>
+          <button class="btn-delete" data-cat="${slug}" data-catnombre="${esc(info.nombre)}">Eliminar</button>
         </div>
       </td>
     </tr>`)

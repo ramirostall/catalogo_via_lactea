@@ -1,4 +1,4 @@
-import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl } from './supabase.js'
+import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl, esc } from './supabase.js'
 
 let todos = []
 
@@ -9,18 +9,18 @@ const iconoCat = categoria => CATEGORIAS[categoria]?.icono || '📦'
 function buildCard(p) {
   const tags = p.tags ? p.tags.split(',').map(t => t.trim()).filter(Boolean) : []
   const tagsHTML = [
-    `<span class="tag tag-marca">${p.marca}</span>`,
-    ...tags.map(t => `<span class="tag tag-sintacc">${t}</span>`)
+    `<span class="tag tag-marca">${esc(p.marca)}</span>`,
+    ...tags.map(t => `<span class="tag tag-sintacc">${esc(t)}</span>`)
   ].join('')
 
   const imgUrl = getImageUrl(p.imagen)
   const imgHTML = imgUrl
-    ? `<img src="${imgUrl}" alt="${p.nombre}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${iconoCat(p.categoria)}</div>'">`
-    : `<div class="ph">${iconoCat(p.categoria)}</div>`
+    ? `<img src="${esc(imgUrl)}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc(iconoCat(p.categoria))}</div>'">`
+    : `<div class="ph">${esc(iconoCat(p.categoria))}</div>`
 
   const promoHTML = (p.promo_cantidad && p.promo_precio)
     ? `<div class="precio-promo">
-         <span class="promo-badge">x${p.promo_cantidad}</span>
+         <span class="promo-badge">x${esc(p.promo_cantidad)}</span>
          $${fmt(p.promo_precio)} <span class="por-unidad">c/u</span>
        </div>`
     : ''
@@ -29,16 +29,16 @@ function buildCard(p) {
   return `
     <div class="product-card"
          data-id="${p.id}"
-         data-cat="${p.categoria}"
-         data-cat-name="${catName}"
-         data-nombre="${(p.nombre||'').toLowerCase()}"
-         data-marca="${(p.marca||'').toLowerCase()}"
+         data-cat="${esc(p.categoria)}"
+         data-cat-name="${esc(catName)}"
+         data-nombre="${esc((p.nombre||'').toLowerCase())}"
+         data-marca="${esc((p.marca||'').toLowerCase())}"
          data-promo="${p.promo_cantidad ? '1' : ''}">
       <div class="tags-row">${tagsHTML}</div>
-      <div class="product-nombre">${p.nombre}</div>
+      <div class="product-nombre">${esc(p.nombre)}</div>
       <div class="product-img-wrap">${imgHTML}</div>
       <div class="precios-wrap">
-        <div class="precio-principal">$${fmt(p.precio)}<span class="unidad">/ ${p.unidad}</span></div>
+        <div class="precio-principal">$${fmt(p.precio)}<span class="unidad">/ ${esc(p.unidad)}</span></div>
         ${promoHTML}
       </div>
     </div>`
@@ -67,7 +67,7 @@ function renderCatalogo(productos) {
   navEl.innerHTML = catsOrdenadas.map(catId => {
     const info = CATEGORIAS[catId] || { nombre: catId, icono: '📦' }
     return `<button class="nav-cat-btn" data-cat="${catId}">
-      <span>${info.icono}</span>${info.nombre}
+      <span>${esc(info.icono)}</span>${esc(info.nombre)}
     </button>`
   }).join('')
 
@@ -76,16 +76,16 @@ function renderCatalogo(productos) {
     const info = CATEGORIAS[catId] || { nombre: catId, icono: '📦' }
     const subsHTML = Object.keys(grupos[catId]).map(subNombre => {
       const prods = grupos[catId][subNombre]
-      return `<div class="subcat-section" data-subcat="${subNombre}">
-        <div class="subcat-title">${subNombre}</div>
+      return `<div class="subcat-section" data-subcat="${esc(subNombre)}">
+        <div class="subcat-title">${esc(subNombre)}</div>
         <div class="productos-grid">${prods.map(buildCard).join('')}</div>
       </div>`
     }).join('')
 
     return `<section class="cat-section" id="cat-${catId}" data-cat="${catId}">
       <div class="cat-header">
-        <span class="cat-icon">${info.icono}</span>
-        <h2>${info.nombre}</h2>
+        <span class="cat-icon">${esc(info.icono)}</span>
+        <h2>${esc(info.nombre)}</h2>
         <div class="cat-line"></div>
       </div>
       ${subsHTML}

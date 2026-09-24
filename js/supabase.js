@@ -43,6 +43,9 @@ export async function cargarCategorias() {
 export const fmt = n =>
   new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
 
+// Escapar HTML para interpolaciones en innerHTML
+export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+
 // Obtener URL pública de imagen desde Supabase Storage
 export function getImageUrl(path) {
   if (!path) return null
