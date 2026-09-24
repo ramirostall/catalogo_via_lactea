@@ -63,6 +63,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
           Nuevo Producto
         </button>
+        <button class="nav-item" data-view="categorias">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="3"/><path d="M7 10v10m0-10h10a4 4 0 0 0-4-4"/></svg>
+          Categorías
+        </button>
       </nav>
       <div class="sidebar-footer">
         <a href="index.html" target="_blank" class="ver-catalogo-btn">Ver catálogo →</a>
@@ -84,15 +88,6 @@
             <input type="search" id="admin-search" placeholder="Buscar…" class="admin-search"/>
             <select id="admin-filter-cat" class="admin-sel">
               <option value="">Todas las categorías</option>
-              <option value="quesos">Quesos</option>
-              <option value="fiambres">Fiambres</option>
-              <option value="lacteos">Lácteos</option>
-              <option value="dulces">Dulces</option>
-              <option value="aceitunas">Aceitunas</option>
-              <option value="copetin">Copetín</option>
-              <option value="congelados">Congelados</option>
-              <option value="pastas">Pastas</option>
-              <option value="aderezos">Aderezos</option>
             </select>
           </div>
         </div>
@@ -151,15 +146,6 @@
                 <label>Categoría *</label>
                 <select id="prod-categoria">
                   <option value="">Seleccioná…</option>
-                  <option value="quesos">🧀 Quesos</option>
-                  <option value="fiambres">🥩 Fiambres</option>
-                  <option value="lacteos">🥛 Lácteos</option>
-                  <option value="dulces">🍯 Dulces</option>
-                  <option value="aceitunas">🫒 Aceitunas</option>
-                  <option value="copetin">🍿 Copetín</option>
-                  <option value="congelados">❄️ Congelados</option>
-                  <option value="pastas">🍝 Pastas</option>
-                  <option value="aderezos">🫙 Aderezos</option>
                 </select>
               </div>
               <div class="form-group">
@@ -240,10 +226,40 @@
         </div>
       </div>
 
+    <!-- VIEW: CATEGORÍAS -->
+      <div class="view" id="view-categorias">
+        <div class="view-header">
+          <div>
+            <h1>Categorías</h1>
+            <p>Administrá las categorías del catálogo</p>
+          </div>
+          <button class="btn-primary" id="btn-nueva-cat">+ Nueva categoría</button>
+        </div>
+        <div class="productos-table-wrap">
+          <table class="productos-table">
+            <thead>
+              <tr>
+                <th>Icono</th>
+                <th>Nombre</th>
+                <th>Slug</th>
+                <th>Orden</th>
+                <th>Productos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="categorias-tbody"></tbody>
+          </table>
+          <div class="loading" id="categorias-loading">
+            <div class="spinner"></div>
+            <p>Cargando categorías…</p>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <!-- MODAL CONFIRMAR BORRAR -->
+  <!-- MODAL CONFIRMAR BORRAR PRODUCTO -->
   <div class="modal-overlay hidden" id="modal-delete">
     <div class="modal">
       <h3>¿Eliminar producto?</h3>
@@ -251,6 +267,46 @@
       <div class="modal-actions">
         <button class="btn-secondary" id="modal-cancel">Cancelar</button>
         <button class="btn-danger" id="modal-confirm">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVA / EDITAR CATEGORÍA -->
+  <div class="modal-overlay hidden" id="modal-categoria">
+    <div class="modal">
+      <h3 id="cat-modal-title">Nueva categoría</h3>
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" id="cat-nombre" placeholder="Ej: Bebidas" />
+      </div>
+      <div class="form-group">
+        <label>Icono (emoji)</label>
+        <input type="text" id="cat-icono" placeholder="Ej: 🥤" />
+      </div>
+      <div class="form-group">
+        <label>Posición (orden <small>— menor primero</small>)</label>
+        <input type="number" id="cat-orden" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Slug <small>(se genera solo desde el nombre)</small></label>
+        <input type="text" id="cat-slug" disabled placeholder="bebidas" />
+      </div>
+      <div class="form-msg hidden" id="cat-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="cat-cancel">Cancelar</button>
+        <button class="btn-primary" id="cat-save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMAR BORRAR CATEGORÍA -->
+  <div class="modal-overlay hidden" id="modal-delcat">
+    <div class="modal">
+      <h3>¿Eliminar categoría?</h3>
+      <p id="delcat-name">Esta acción no se puede deshacer.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="delcat-cancel">Cancelar</button>
+        <button class="btn-danger" id="delcat-confirm">Eliminar</button>
       </div>
     </div>
   </div>

@@ -639,6 +639,19 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .admin-search:focus, .admin-sel:focus { border-color: var(--rojo); }
 .admin-search { min-width: 200px; }
 
+.td-emoji { width: 60px; font-size: 1.4rem; text-align: center; }
+.slug-code {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: .78rem;
+}
+.modal .form-group { text-align: left; }
+.modal .form-group label { display: inline-flex; align-items: baseline; gap: 4px; }
+.modal .form-group small { color: var(--texto-muted); font-weight: 400; }
+.modal .form-msg { margin-bottom: 12px; }
+
 /* ── MODAL ────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;

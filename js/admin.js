@@ -1,4 +1,4 @@
-import { db, CATEGORIAS, fmt, getImageUrl } from './supabase.js'
+import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl } from './supabase.js'
 
 let productos = []
 let editandoId = null
@@ -42,7 +42,9 @@ function showLogin(message = '') {
 async function activateAdmin() {
   document.getElementById('login-overlay').classList.add('hidden')
   document.getElementById('admin-wrap').classList.remove('hidden')
+  await cargarCategorias()
   await cargarProductos()
+  refrescarOpcionesCategorias()
 }
 
 document.getElementById('login-btn').addEventListener('click', loginWithEmail)
@@ -152,7 +154,10 @@ function showView(viewName) {
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.dataset.view === 'nuevo') nuevoProducto()
-    else showView(btn.dataset.view)
+    else if (btn.dataset.view === 'categorias') {
+      showView('categorias')
+      renderCategoriasTabla()
+    } else showView(btn.dataset.view)
   })
 })
 
@@ -253,6 +258,11 @@ function editarProducto(id) {
   document.getElementById('prod-marca').value = p.marca || ''
   document.getElementById('prod-unidad').value = p.unidad || ''
   document.getElementById('prod-categoria').value = p.categoria || ''
+  const catSelect = document.getElementById('prod-categoria')
+  if (catSelect.value !== p.categoria) {
+    catSelect.appendChild(new Option(p.categoria, p.categoria))
+    catSelect.value = p.categoria
+  }
   document.getElementById('prod-subcategoria').value = p.subcategoria || ''
   document.getElementById('prod-precio').value = p.precio || ''
   document.getElementById('tag-sintacc').checked = !!(p.tags && p.tags.includes('SIN TACC'))
@@ -411,6 +421,185 @@ function previewFile(file) {
 document.getElementById('remove-img').addEventListener('click', e => {
   e.stopPropagation()
   resetImagenUi()
+})
+
+/* ══════════════════════════════════════════════════════════
+   CATEGORÍAS
+══════════════════════════════════════════════════════════ */
+let editandoCatId = null
+let borrandoCatId = null
+
+function ordenCategorias() {
+  return Object.entries(CATEGORIAS).sort((a, b) =>
+    (a[1].orden || 0) - (b[1].orden || 0) || a[0].localeCompare(b[0]))
+}
+
+function refrescarOpcionesCategorias() {
+  ;['prod-categoria', 'admin-filter-cat'].forEach(id => {
+    const select = document.getElementById(id)
+    const valor = select.value
+    const allLabel = id === 'admin-filter-cat' ? 'Todas las categorías' : 'Seleccioná…'
+    select.innerHTML = ''
+    select.appendChild(new Option(allLabel, ''))
+    ordenCategorias().forEach(([slug, info]) =>
+      select.appendChild(new Option(`${info.icono} ${info.nombre}`, slug)))
+    if (valor) select.value = valor
+  })
+}
+
+function renderCategoriasTabla() {
+  const tbody = document.getElementById('categorias-tbody')
+  const loading = document.getElementById('categorias-loading')
+  loading.classList.remove('hidden')
+  tbody.innerHTML = ''
+
+  const conteo = {}
+  productos.forEach(p => { conteo[p.categoria] = (conteo[p.categoria] || 0) + 1 })
+
+  const filas = ordenCategorias().map(([slug, info]) => `
+    <tr data-slug="${slug}">
+      <td class="td-emoji">${info.icono}</td>
+      <td>
+        <div class="td-nombre">${info.nombre}</div>
+      </td>
+      <td><code class="slug-code">${slug}</code></td>
+      <td>${info.orden || 0}</td>
+      <td>${conteo[slug] || 0}</td>
+      <td class="td-actions">
+        <button class="btn-edit" data-cat="${slug}">Editar</button>
+        <button class="btn-delete" data-cat="${slug}" data-catnombre="${info.nombre}">Eliminar</button>
+      </td>
+    </tr>`)
+
+  tbody.innerHTML = filas.join('') || `<tr><td colspan="6" class="empty-row">No hay categorías todavía. ¡Creá la primera!</td></tr>`
+  loading.classList.add('hidden')
+
+  tbody.querySelectorAll('.btn-edit').forEach(btn =>
+    btn.addEventListener('click', () => abrirModalCategoria(btn.dataset.cat)))
+  tbody.querySelectorAll('.btn-delete').forEach(btn =>
+    btn.addEventListener('click', () => confirmarBorrarCategoria(btn.dataset.cat, btn.dataset.catnombre)))
+}
+
+function slugificar(nombre) {
+  return (nombre || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function abrirModalCategoria(slug = null) {
+  editandoCatId = slug || null
+  document.getElementById('cat-msg').classList.add('hidden')
+  document.getElementById('cat-nombre').value = ''
+  document.getElementById('cat-icono').value = ''
+  document.getElementById('cat-orden').value = ''
+  document.getElementById('cat-slug').value = ''
+
+  if (slug) {
+    const info = CATEGORIAS[slug]
+    document.getElementById('cat-modal-title').textContent = 'Editar categoría'
+    if (info) {
+      document.getElementById('cat-nombre').value = info.nombre
+      document.getElementById('cat-icono').value = info.icono || '📦'
+      document.getElementById('cat-orden').value = info.orden || 0
+      document.getElementById('cat-slug').value = slug
+    }
+  } else {
+    document.getElementById('cat-modal-title').textContent = 'Nueva categoría'
+    const maxOrden = Math.max(0, ...ordenCategorias().map(([, i]) => i.orden || 0))
+    document.getElementById('cat-orden').value = maxOrden + 10
+  }
+
+  document.getElementById('modal-categoria').classList.remove('hidden')
+  document.getElementById('cat-nombre').focus()
+}
+
+function cerrarModalCategoria() {
+  document.getElementById('modal-categoria').classList.add('hidden')
+  editandoCatId = null
+}
+
+function catMsg(txt, tipo) {
+  const el = document.getElementById('cat-msg')
+  el.textContent = txt
+  el.className = `form-msg ${tipo}`
+  el.classList.remove('hidden')
+}
+
+document.getElementById('btn-nueva-cat').addEventListener('click', () => abrirModalCategoria())
+document.getElementById('cat-cancel').addEventListener('click', cerrarModalCategoria)
+document.getElementById('cat-nombre').addEventListener('input', e => {
+  document.getElementById('cat-slug').value = slugificar(e.target.value)
+})
+document.getElementById('cat-save').addEventListener('click', guardarCategoria)
+
+async function guardarCategoria() {
+  const nombre = document.getElementById('cat-nombre').value.trim()
+  const icono = document.getElementById('cat-icono').value.trim() || '📦'
+  const orden = parseInt(document.getElementById('cat-orden').value) || 0
+  const slug = slugificar(nombre)
+
+  if (!slug) { catMsg('Completá el nombre de la categoría.', 'error'); return }
+
+  const duplicado = Object.entries(CATEGORIAS).find(([s, info]) => {
+    if (editandoCatId && s === editandoCatId) return false
+    return s === slug || info.nombre.toLowerCase() === nombre.toLowerCase()
+  })
+  if (duplicado) {
+    catMsg('Ya existe una categoría con ese nombre o slug.', 'error')
+    return
+  }
+
+  const btn = document.getElementById('cat-save')
+  btn.disabled = true
+  btn.textContent = 'Guardando…'
+
+  const payload = { slug, nombre, icono, orden }
+  const { error } = editandoCatId
+    ? await db.from('categorias').update(payload).eq('slug', editandoCatId)
+    : await db.from('categorias').insert(payload)
+
+  btn.disabled = false
+  btn.textContent = 'Guardar'
+
+  if (error) { catMsg('Error al guardar: ' + error.message, 'error'); return }
+
+  cerrarModalCategoria()
+  await cargarCategorias()
+  refrescarOpcionesCategorias()
+  renderCategoriasTabla()
+  await cargarProductos()
+}
+
+function confirmarBorrarCategoria(slug, nombre) {
+  const enUso = productos.filter(p => p.categoria === slug).length
+  if (enUso > 0) {
+    alert(`No se puede eliminar "${nombre}": hay ${enUso} producto(s) usando esa categoría.`)
+    return
+  }
+  borrandoCatId = slug
+  document.getElementById('delcat-name').textContent = `"${nombre}" será eliminada.`
+  document.getElementById('modal-delcat').classList.remove('hidden')
+}
+
+document.getElementById('delcat-cancel').addEventListener('click', () => {
+  document.getElementById('modal-delcat').classList.add('hidden')
+  borrandoCatId = null
+})
+
+document.getElementById('delcat-confirm').addEventListener('click', async () => {
+  if (!borrandoCatId) return
+  const { error } = await db.from('categorias').delete().eq('slug', borrandoCatId)
+  document.getElementById('modal-delcat').classList.add('hidden')
+  borrandoCatId = null
+  if (error) alert('Error al eliminar: ' + error.message)
+  else {
+    await cargarCategorias()
+    refrescarOpcionesCategorias()
+    renderCategoriasTabla()
+  }
 })
 
 /* ══════════════════════════════════════════════════════════

@@ -1,9 +1,9 @@
-import { db, CATEGORIAS, fmt, getImageUrl } from './supabase.js'
+import { db, CATEGORIAS, cargarCategorias, fmt, getImageUrl } from './supabase.js'
 
 let todos = []
 
 /* ── Icono placeholder ─────────────────────────────────── */
-const iconoCat = id => ({ quesos:'🧀', fiambres:'🥩', lacteos:'🥛', dulces:'🍯', aceitunas:'🫒', copetin:'🍿', congelados:'❄️', pastas:'🍝', aderezos:'🫙' }[id] ?? '📦')
+const iconoCat = categoria => CATEGORIAS[categoria]?.icono || '📦'
 
 /* ── Construir tarjeta ─────────────────────────────────── */
 function buildCard(p) {
@@ -60,8 +60,11 @@ function renderCatalogo(productos) {
   })
 
   // Nav
+  const catsOrdenadas = Object.keys(grupos).sort((a, b) =>
+    (CATEGORIAS[a]?.orden || 0) - (CATEGORIAS[b]?.orden || 0) || a.localeCompare(b))
+
   const navEl = document.getElementById('nav-cats')
-  navEl.innerHTML = Object.keys(grupos).map(catId => {
+  navEl.innerHTML = catsOrdenadas.map(catId => {
     const info = CATEGORIAS[catId] || { nombre: catId, icono: '📦' }
     return `<button class="nav-cat-btn" data-cat="${catId}">
       <span>${info.icono}</span>${info.nombre}
@@ -69,7 +72,7 @@ function renderCatalogo(productos) {
   }).join('')
 
   // Secciones
-  catalogo.innerHTML = Object.keys(grupos).map(catId => {
+  catalogo.innerHTML = catsOrdenadas.map(catId => {
     const info = CATEGORIAS[catId] || { nombre: catId, icono: '📦' }
     const subsHTML = Object.keys(grupos[catId]).map(subNombre => {
       const prods = grupos[catId][subNombre]
@@ -122,7 +125,7 @@ function renderCatalogo(productos) {
   document.getElementById('loading').classList.add('hidden')
 
   // Activar primer nav
-  const firstCat = Object.keys(grupos)[0]
+  const firstCat = catsOrdenadas[0]
   activarNav(firstCat)
   bindEvents()
 }
@@ -203,6 +206,7 @@ function bindEvents() {
 
 /* ── Arranque ──────────────────────────────────────────── */
 async function init() {
+  await cargarCategorias()
   const { data, error } = await db.from('productos').select('*').order('categoria').order('nombre')
   if (error) {
     console.error('Error cargando productos:', error)

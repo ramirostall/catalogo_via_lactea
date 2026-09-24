@@ -5,17 +5,39 @@ const SUPABASE_KEY = 'sb_publishable_6HtJ1NgpwJNSJrrJj2qSKA_fnk5r2r0'
 
 export const db = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// Categorías con su info
-export const CATEGORIAS = {
-  quesos:     { nombre: 'Quesos',     icono: '🧀' },
-  fiambres:   { nombre: 'Fiambres',   icono: '🥩' },
-  lacteos:    { nombre: 'Lácteos',    icono: '🥛' },
-  dulces:     { nombre: 'Dulces',     icono: '🍯' },
-  aceitunas:  { nombre: 'Aceitunas',  icono: '🫒' },
-  copetin:    { nombre: 'Copetín',    icono: '🍿' },
-  congelados: { nombre: 'Congelados', icono: '❄️' },
-  pastas:     { nombre: 'Pastas',     icono: '🍝' },
-  aderezos:   { nombre: 'Aderezos',   icono: '🫙' },
+// Categorías: arrancan con valores por defecto y se sobreescriben desde la tabla `categorias`
+export let CATEGORIAS = {
+  quesos:     { nombre: 'Quesos',     icono: '🧀', orden: 10 },
+  fiambres:   { nombre: 'Fiambres',   icono: '🥩', orden: 20 },
+  lacteos:    { nombre: 'Lácteos',    icono: '🥛', orden: 30 },
+  dulces:     { nombre: 'Dulces',     icono: '🍯', orden: 40 },
+  aceitunas:  { nombre: 'Aceitunas',  icono: '🫒', orden: 50 },
+  copetin:    { nombre: 'Copetín',    icono: '🍿', orden: 60 },
+  congelados: { nombre: 'Congelados', icono: '❄️', orden: 70 },
+  pastas:     { nombre: 'Pastas',     icono: '🍝', orden: 80 },
+  aderezos:   { nombre: 'Aderezos',   icono: '🫙', orden: 90 },
+}
+
+const CATEGORIAS_FALLBACK = CATEGORIAS
+
+export async function cargarCategorias() {
+  const { data, error } = await db.from('categorias').select('*').order('orden').order('nombre')
+  if (error || !data) {
+    console.error('Error cargando categorías:', error)
+    CATEGORIAS = CATEGORIAS_FALLBACK
+    return false
+  }
+  const mapa = {}
+  data.forEach(c => {
+    mapa[c.slug] = {
+      id: c.id,
+      nombre: c.nombre,
+      icono: c.icono || '📦',
+      orden: typeof c.orden === 'number' ? c.orden : 0,
+    }
+  })
+  CATEGORIAS = mapa
+  return true
 }
 
 export const fmt = n =>
