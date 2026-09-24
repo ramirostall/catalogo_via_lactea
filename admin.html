@@ -39,7 +39,43 @@
       <div class="login-error hidden" id="login-error">Correo electrónico o contraseña incorrectos</div>
       <button class="btn-primary" id="login-btn">Ingresar</button>
       <button class="btn-secondary" id="register-btn" type="button">Registrarse</button>
+      <button class="link-btn" id="forgot-pass" type="button">¿Olvidaste tu contraseña?</button>
       <p class="login-note">Bienvenido a Vía Láctea. Pedí el cambio de rol admin con quien administra tu cuenta.</p>
+    </div>
+
+    <!-- RECUPERAR CONTRASEÑA: pedir link -->
+    <div class="login-box hidden" id="recovery-box">
+      <div class="login-logo">🔑</div>
+      <h2>Restablecer contraseña</h2>
+      <p>Ingresá tu correo y te enviamos un link para cambiarla.</p>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="recovery-email" placeholder="admin@example.com" autocomplete="email" />
+      </div>
+      <div class="login-msg hidden" id="recovery-msg"></div>
+      <div class="login-error hidden" id="recovery-error"></div>
+      <button class="btn-primary" id="recovery-btn">Enviar link de recuperación</button>
+      <button class="btn-secondary" id="recovery-back" type="button">← Volver al login</button>
+    </div>
+
+    <!-- RECUPERAR CONTRASEÑA: nueva contraseña -->
+    <div class="login-box hidden" id="reset-box">
+      <div class="login-logo">🔑</div>
+      <h2>Nueva contraseña</h2>
+      <p>Elegí una contraseña nueva para tu cuenta.</p>
+      <div class="form-group">
+        <label>Contraseña nueva</label>
+        <div class="password-wrapper">
+          <input type="password" id="reset-pass" placeholder="********" autocomplete="new-password" />
+          <button class="password-toggle" id="toggle-reset" type="button" aria-label="Mostrar contraseña">👁</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirmar contraseña</label>
+        <input type="password" id="reset-pass2" placeholder="********" autocomplete="new-password" />
+      </div>
+      <div class="login-error hidden" id="reset-error"></div>
+      <button class="btn-primary" id="reset-btn">Guardar nueva contraseña</button>
     </div>
   </div>
 

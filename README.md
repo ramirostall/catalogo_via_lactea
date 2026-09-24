@@ -20,6 +20,7 @@ Sin frameworks: **HTML + CSS + JavaScript vanilla (ES modules)** sobre **Supabas
 ### Panel admin (`admin.html`)
 - Login con correo y contraseña (Supabase Auth, siempre arranca deslogueado).
 - Registro de usuarios; el rol `admin` lo asigna quien administra el proyecto.
+- **Recuperación de contraseña**: "¿Olvidaste tu contraseña?" en el login envía un link al correo (Supabase Auth + SMTP) y el mismo `admin.html` muestra el formulario para fijar la nueva contraseña.
 - CRUD completo de productos: imagen con preview, promos, etiqueta Sin TACC.
 - Gestor de categorías dinámicas (nombre, emoji, orden, slug autogenerado).
 - Subida de imágenes con validación de formato y tamaño (máx. 5 MB).

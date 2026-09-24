@@ -9,15 +9,36 @@ let imagenPath = null // path en storage
    AUTENTICACIÓN
 ══════════════════════════════════════════════════════════ */
 async function initAuth() {
-  // Siempre arrancar deslogueado: el login aparece en blanco y el navegador
-  // ofrece autocompletar al hacer foco en el campo de mail.
-  try { await db.auth.signOut() } catch (e) { /* ignore */ }
+  const recovery = esLinkRecuperacion()
+  // Si venimos de un link de recuperación NO hay que firmar out:
+  // la sesión que trae el hash es la que permite actualizar la contraseña.
+  if (!recovery) {
+    try { await db.auth.signOut() } catch (e) { /* ignore */ }
+  }
   showLogin()
 
   db.auth.onAuthStateChange(async (_event, authSession) => {
-    if (authSession?.session) await verifyAdmin(authSession.session.user)
-    else showLogin()
+    if (recovery) {
+      showResetForm()
+    } else if (authSession?.session) {
+      await verifyAdmin(authSession.session.user)
+    } else {
+      showLogin()
+    }
   })
+}
+
+function esLinkRecuperacion() {
+  const params = new URLSearchParams(location.hash.slice(1) || location.search.slice(1))
+  return params.get('type') === 'recovery'
+}
+
+function showResetForm() {
+  document.getElementById('login-overlay').classList.remove('hidden')
+  document.getElementById('admin-wrap').classList.add('hidden')
+  document.querySelectorAll('.login-box').forEach(b => b.classList.add('hidden'))
+  document.getElementById('reset-box').classList.remove('hidden')
+  document.getElementById('reset-pass').focus()
 }
 
 function clearLoginFields() {
@@ -28,6 +49,8 @@ function clearLoginFields() {
 function showLogin(message = '') {
   document.getElementById('login-overlay').classList.remove('hidden')
   document.getElementById('admin-wrap').classList.add('hidden')
+  document.getElementById('recovery-box').classList.add('hidden')
+  document.getElementById('reset-box').classList.add('hidden')
   clearLoginFields()
   setTimeout(clearLoginFields, 200)
   const errorEl = document.getElementById('login-error')
@@ -140,6 +163,95 @@ async function registerWithEmail() {
 
   showLogin('Te registraste correctamente. Pedí el cambio de rol admin con quien administra el proyecto.')
 }
+
+/* ── Recuperar contraseña ────────────────────────────── */
+document.getElementById('forgot-pass').addEventListener('click', () => {
+  document.querySelectorAll('.login-box').forEach(b => b.classList.add('hidden'))
+  document.getElementById('recovery-box').classList.remove('hidden')
+  document.getElementById('login-error').classList.add('hidden')
+  document.getElementById('recovery-error').classList.add('hidden')
+  document.getElementById('recovery-msg').classList.add('hidden')
+  document.getElementById('recovery-email').focus()
+})
+
+document.getElementById('recovery-back').addEventListener('click', showLogin)
+
+document.getElementById('recovery-email').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('recovery-btn').click()
+})
+
+document.getElementById('recovery-btn').addEventListener('click', async () => {
+  const email = document.getElementById('recovery-email').value.trim()
+  const msgEl = document.getElementById('recovery-msg')
+  const errorEl = document.getElementById('recovery-error')
+  msgEl.classList.add('hidden')
+  errorEl.classList.add('hidden')
+
+  if (!email) {
+    errorEl.textContent = 'Ingresá tu correo electrónico.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+
+  // El link del correo vuelve a admin.html, donde se detecta type=recovery
+  const redirectTo = location.origin + location.pathname
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo })
+
+  if (error) {
+    errorEl.textContent = 'No pudimos enviar el link. Revisá que el correo sea correcto.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+
+  msgEl.textContent = 'Si el correo existe, te enviamos el link de recuperación. Revisá tu bandeja de entrada.'
+  msgEl.classList.remove('hidden')
+})
+
+document.getElementById('toggle-reset').addEventListener('click', () => {
+  const input = document.getElementById('reset-pass')
+  const btn = document.getElementById('toggle-reset')
+  const isPassword = input.type === 'password'
+  input.type = isPassword ? 'text' : 'password'
+  btn.textContent = isPassword ? '🙈' : '👁️'
+})
+
+document.getElementById('reset-pass2').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('reset-btn').click()
+})
+
+document.getElementById('reset-btn').addEventListener('click', async () => {
+  const pass = document.getElementById('reset-pass').value
+  const pass2 = document.getElementById('reset-pass2').value
+  const errorEl = document.getElementById('reset-error')
+  errorEl.classList.add('hidden')
+
+  if (!pass || pass.length < 6) {
+    errorEl.textContent = 'La contraseña tiene que tener al menos 6 caracteres.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+  if (pass !== pass2) {
+    errorEl.textContent = 'Las contraseñas no coinciden.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+
+  const btn = document.getElementById('reset-btn')
+  btn.disabled = true
+  const { error } = await db.auth.updateUser({ password: pass })
+  btn.disabled = false
+
+  if (error) {
+    errorEl.textContent = 'Ocurrió un error al guardar. Intentá de nuevo.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+
+  // Limpiar el hash para que un refresh no vuelva a mostrar el formulario
+  history.replaceState(null, '', location.pathname)
+  await db.auth.signOut()
+  showLogin('✅ Contraseña actualizada. Ingresá con tu nueva contraseña.')
+})
 
 /* ══════════════════════════════════════════════════════════
    NAVEGACIÓN
