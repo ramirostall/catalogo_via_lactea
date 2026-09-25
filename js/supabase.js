@@ -3,7 +3,15 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://menpgxstirxkehlbmzsd.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_6HtJ1NgpwJNSJrrJj2qSKA_fnk5r2r0'
 
-export const db = createClient(SUPABASE_URL, SUPABASE_KEY)
+// La sesión vive en sessionStorage: sobrevive minimizar / cambiar de pestaña,
+// pero se borra sola al cerrar la pestaña o el navegador.
+export const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    storage: window.sessionStorage,
+    persistSession: true,
+    autoRefreshToken: true,
+  }
+})
 
 // Categorías: arrancan con valores por defecto y se sobreescriben desde la tabla `categorias`
 export let CATEGORIAS = {

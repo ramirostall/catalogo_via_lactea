@@ -10,11 +10,6 @@ let imagenPath = null // path en storage
 ══════════════════════════════════════════════════════════ */
 async function initAuth() {
   const recovery = esLinkRecuperacion()
-  // Si venimos de un link de recuperación NO hay que firmar out:
-  // la sesión que trae el hash es la que permite actualizar la contraseña.
-  if (!recovery) {
-    try { await db.auth.signOut() } catch (e) { /* ignore */ }
-  }
   showLogin()
 
   db.auth.onAuthStateChange(async (_event, authSession) => {
