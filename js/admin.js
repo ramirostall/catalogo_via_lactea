@@ -15,8 +15,8 @@ async function initAuth() {
   db.auth.onAuthStateChange(async (_event, authSession) => {
     if (recovery) {
       showResetForm()
-    } else if (authSession?.session) {
-      await verifyAdmin(authSession.session.user)
+    } else if (authSession) {
+      await verifyAdmin(authSession.user)
     } else {
       showLogin()
     }
